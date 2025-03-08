@@ -60,6 +60,20 @@ class Processor:
                 self.result.month_folders += 1
                 self.map[year+"_"+month] = True
 
+            organised_folder_path = year
+            if self.month_format == "YYYY_MM":
+                organised_folder_path = year+"/"+year+"_"+month
+            else:
+                organised_folder_path = year+"/"+month
+
+            if self.date_format == "YYYY_MM_DD":
+                organised_folder_path = organised_folder_path+"/"+year+"_"+month+"_"+day
+            elif self.date_format == "MM_DD":
+                organised_folder_path = organised_folder_path+"/"+month+"_"+day
+            elif self.date_format == "No Date":
+                pass
+            else:
+                organised_folder_path = organised_folder_path+"/"+day
             self.place_file_in_correct_location(file.path, year+"/"+month+"/"+day)
             self.result.files_organised+=1
         else:
@@ -114,7 +128,6 @@ class Processor:
 
     def valid_date(self, year_month_day):
         if year_month_day:
-            year, month, day = year_month_day.split(":")
             try:
                 dt = datetime.datetime.strptime(year_month_day, "%Y:%m:%d")
                 tomorrow = datetime.date.today() + datetime.timedelta(days=1)
@@ -127,12 +140,10 @@ class Processor:
     def place_file_in_correct_location(self, original_file_path, organised_folder_path):
         destination = os.path.join(self.desination_folder, organised_folder_path)
         os.makedirs(destination, exist_ok=True)
-        # print(original_file_path, destination)
-        print(self.copy_or_move)
-        # if self.copy_or_move == "Move":
-        #     shutil.move(original_file_path, destination)
-        # else:
-        #     shutil.copy(original_file_path, destination)
+        if self.copy_or_move == "Move":
+            shutil.move(original_file_path, destination)
+        else:
+            shutil.copy(original_file_path, destination)
 
     def stop(self):
         self.run = False

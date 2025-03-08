@@ -148,6 +148,7 @@ class UI:
         self.month_folders_label.config(text="Month folders generated: " + str(result.month_folders))
         self.files_organised_label.config(text="Files organised: " + str(result.files_organised))
         self.files_not_moved_label.config(text="Files that could not be moved: "+ str(result.files_not_organised))
+        self.go_button.config(state="normal")
         self.close_button.config(state="normal")
 
     def close(self):
