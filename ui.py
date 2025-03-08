@@ -12,7 +12,7 @@ class UI:
     def __init__(self, root, api_key):
         self.root = root
         self.api_key = api_key
-        self.root.title("File Organizer")
+        self.root.title("GallerySorter")
         self.root.geometry("700x600")  # Set the window size to 400x300 pixels
 
         self.folder_label = tk.Label(root, text="Select Folder:")
