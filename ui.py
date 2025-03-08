@@ -1,4 +1,6 @@
+import atexit
 import getpass
+import os
 import threading
 import tkinter as tk
 from tkinter import filedialog
@@ -11,7 +13,7 @@ class UI:
         self.root = root
         self.api_key = api_key
         self.root.title("File Organizer")
-        self.root.geometry("800x500")  # Set the window size to 400x300 pixels
+        self.root.geometry("700x600")  # Set the window size to 400x300 pixels
 
         self.folder_label = tk.Label(root, text="Select Folder:")
         self.folder_label.pack()
@@ -33,10 +35,8 @@ class UI:
 
         self.month_format_frame = tk.Frame(root)
         self.month_format_frame.pack()
-
         self.month_format_mm = tk.Radiobutton(self.month_format_frame, text="MM", variable=self.month_format, value="MM")
         self.month_format_mm.pack(side=tk.LEFT)
-
         self.month_format_yyyymm = tk.Radiobutton(self.month_format_frame, text="YYYY_MM", variable=self.month_format, value="YYYY_MM")
         self.month_format_yyyymm.pack(side=tk.LEFT)
 
@@ -48,17 +48,13 @@ class UI:
 
         self.date_frame = tk.Frame(root)
         self.date_frame.pack()
-
         self.date_no_date = tk.Radiobutton(self.date_frame, text="No Date (attribute photos to the month folder)",
                                       variable=self.date_format, value="No Date")
         self.date_no_date.pack(side=tk.LEFT)
-
         self.date_dd = tk.Radiobutton(self.date_frame, text="DD", variable=self.date_format, value="DD")
         self.date_dd.pack(side=tk.LEFT)
-
         self.date_mm_dd = tk.Radiobutton(self.date_frame, text="MM_DD", variable=self.date_format, value="MM_DD")
         self.date_mm_dd.pack(side=tk.LEFT)
-
         self.date_yyyymmdd = tk.Radiobutton(self.date_frame, text="YYYY_MM_DD", variable=self.date_format, value="YYYY_MM_DD")
         self.date_yyyymmdd.pack(side=tk.LEFT)
 
@@ -70,6 +66,18 @@ class UI:
 
         self.destination_button = tk.Button(root, text="Browse", command=self.select_destination)
         self.destination_button.pack()
+
+        self.copy_or_move = tk.StringVar()
+        self.copy_or_move.set("Copy")  # default value
+
+        self.copy_move_frame = tk.Frame(root)
+        self.copy_move_frame.pack()
+        self.copy = tk.Radiobutton(self.copy_move_frame, text="Copy Files", variable=self.copy_or_move,
+                                              value="Copy")
+        self.copy.pack(side=tk.LEFT)
+        self.move = tk.Radiobutton(self.copy_move_frame, text="Move Files", variable=self.copy_or_move,
+                                                  value="Move")
+        self.move.pack(side=tk.LEFT)
 
         self.go_button = tk.Button(root, text="Go", command=self.go, width=7, height=2)
         self.go_button.pack()
@@ -99,6 +107,8 @@ class UI:
         self.files_not_moved_label.pack()
         self.close_button = tk.Button(root, text="Close", command=self.close)
         self.close_button.pack()
+        root.protocol("WM_DELETE_WINDOW", self.close)
+        atexit.register(self.close)
 
 
     def select_folder(self):
@@ -110,26 +120,27 @@ class UI:
         self.destination_entry.config(text=folder_path)
 
     def go(self):
+        source_path = self.folder_entry.cget("text")
+        if not source_path:
+            tk.messagebox.showerror("Error", "Please select a folder")
+            self.go_button.config(state="normal")
+            self.close_button.config(state="normal")
+            return
+        destination_path = self.destination_entry.cget("text")
+        if not destination_path:
+            tk.messagebox.showerror("Error", "Please select a destination")
+            self.go_button.config(state="normal")
+            self.close_button.config(state="normal")
+            return
+        if os.path.commonpath([source_path, destination_path]) == source_path:
+            tk.messagebox.showwarning("Warning", "Destination is inside source folder. This will cause issues.")
+            return
+
         self.go_button.config(state="disabled")
         self.close_button.config(state="disabled")
+        self.processor = Processor(source_path, destination_path, self.month_format.get(), self.date_format.get(), self.copy_or_move.get(), self.api_key)
+        threading.Thread(target=self.processor.process_files, args=(self.complete,)).start()
         self.loading_bar.start(20)
-
-        source_path = "/Users/" + getpass.getuser() + "/Downloads/Takeout/"
-        # source_path = self.folder_entry.cget("text")
-        # if not source_path:
-        #     tk.messagebox.showerror("Error", "Please select a folder")
-        #     self.go_button.config(state="normal")
-        #     self.close_button.config(state="normal")
-        #     return
-        destination_path = "/Users/" + getpass.getuser() + "/Downloads/"
-        # destination_path = self.destination_entry.cget("text")
-        # if not destination_path:
-        #     tk.messagebox.showerror("Error", "Please select a destination")
-        #     self.go_button.config(state="normal")
-        #     self.close_button.config(state="normal")
-        #     return
-        processor = Processor(source_path, destination_path, self.month_format.get(), self.date_format.get(), api_key)
-        threading.Thread(target=processor.process_files, args=(self.complete,)).start()
 
     def complete(self, result: Result):
         self.loading_bar.stop()
@@ -140,4 +151,6 @@ class UI:
         self.close_button.config(state="normal")
 
     def close(self):
+        if hasattr(self, 'processor') and self.processor:
+            self.processor.stop()
         self.root.destroy()
