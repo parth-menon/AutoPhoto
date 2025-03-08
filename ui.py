@@ -103,7 +103,7 @@ class UI:
         self.files_organised_label = tk.Label(root, text="Files organised: 0")
         self.files_organised_label.pack()
 
-        self.files_not_moved_label = tk.Label(root, text="Files that could not be moved: 0")
+        self.files_not_moved_label = tk.Label(root, text="Files that could not be organised: 0")
         self.files_not_moved_label.pack()
         self.close_button = tk.Button(root, text="Close", command=self.close)
         self.close_button.pack()
