@@ -12,7 +12,7 @@ from result import Result
 
 class Processor:
     def __init__(self, source_path, destination_path, month_format, date_format, copy_or_move, api_key):
-        self.unorganised_files = []
+        self.unorganised_files: [os.DirEntry] = []
         self.source_folder = None
         self.source_path = source_path
         self.destination_path = destination_path
@@ -45,14 +45,14 @@ class Processor:
                     if not entry.name.endswith((".json", ".html", ".xml", ".db", ".DS_Store")):
                         self.organize_file(entry)
         for file in self.unorganised_files:
-            self.place_file_in_correct_location(file, "Unorganised")
+            self.place_file_in_correct_location(file, "Unorganised", "2000:01:01")
         complete(self.result)
         pass
 
     def organize_file(self, file: os.DirEntry):
         year_month_day = self.get_year_month_day(file)
         if year_month_day and self.valid_date(year_month_day):
-            year, month, day = self.get_year_month_day(file).split(":")
+            year, month, day = year_month_day.split(":")
             if year not in self.map:
                 self.result.year_folders += 1
                 self.map[year] = True
@@ -62,9 +62,9 @@ class Processor:
 
             organised_folder_path = year
             if self.month_format == "YYYY_MM":
-                organised_folder_path = year+"/"+year+"_"+month
+                organised_folder_path = organised_folder_path+"/"+year+"_"+month
             else:
-                organised_folder_path = year+"/"+month
+                organised_folder_path = organised_folder_path+"/"+month
 
             if self.date_format == "YYYY_MM_DD":
                 organised_folder_path = organised_folder_path+"/"+year+"_"+month+"_"+day
@@ -74,10 +74,10 @@ class Processor:
                 pass
             else:
                 organised_folder_path = organised_folder_path+"/"+day
-            self.place_file_in_correct_location(file.path, year+"/"+month+"/"+day)
+            self.place_file_in_correct_location(file, organised_folder_path, year_month_day)
             self.result.files_organised+=1
         else:
-            self.unorganised_files.append(file.path)
+            self.unorganised_files.append(file)
             self.result.files_not_organised += 1
 
     def get_year_month_day(self, file):
@@ -137,13 +137,28 @@ class Processor:
                 return False
         return False
 
-    def place_file_in_correct_location(self, original_file_path, organised_folder_path):
+    def place_file_in_correct_location(self, file: os.DirEntry, organised_folder_path, year_month_day):
         destination = os.path.join(self.desination_folder, organised_folder_path)
         os.makedirs(destination, exist_ok=True)
         if self.copy_or_move == "Move":
-            shutil.move(original_file_path, destination)
+            shutil.move(file.path, destination)
         else:
-            shutil.copy(original_file_path, destination)
+            shutil.copy(file.path, destination)
+        self.set_last_modification_time_if_incorrect(os.path.join(destination, file.name), year_month_day)
+
+    def set_last_modification_time_if_incorrect(self, file_path, year_month_day):
+        try:
+            timestamp = os.path.getmtime(file_path)
+            dt = datetime.datetime.fromtimestamp(timestamp)
+            extracted_date = dt.strftime("%Y:%m:%d")
+            if extracted_date and extracted_date != year_month_day:
+                self.set_last_modification_time(file_path, year_month_day, extracted_date)
+        except:
+            pass
+
+    def set_last_modification_time(self, file_path, year_month_day, extracted_date):
+        dt = datetime.datetime.strptime(year_month_day, "%Y:%m:%d")
+        os.utime(file_path, (dt.timestamp(), dt.timestamp()))
 
     def stop(self):
         self.run = False
