@@ -1,6 +1,6 @@
-# GallerySorter
+# AutoPhoto
 
-GallerySorter is a simple Python program designed to help you organize images and videos you have been taking for years. Unlike many commercial solutions that either run locally(like PhotoMove) or on the cloud and often use your images to train AI models(like GooglePhotos), GallerySorter offers a straightforward, privacy-focused approach to media organization.
+AutoPhoto is a simple Python program designed to help you organize images and videos you have been taking for years. Unlike many commercial solutions that either run locally(like PhotoMove) or on the cloud and often use your images to train AI models(like GooglePhotos), AutoPhoto offers a straightforward, privacy-focused approach to media organization.
 
 <img width="723" alt="Screenshot 2025-03-08 at 6 43 07 pm" src="https://github.com/user-attachments/assets/cfdce1d1-6b35-4d51-a833-c2905e24d92c" />
 
@@ -17,18 +17,18 @@ GallerySorter is a simple Python program designed to help you organize images an
 
 ## Installation and Running
 
-Couple of ways to run GallerySorter
+Couple of ways to run AutoPhoto
 
   1. **Using the released app**
      Head over to the releases section and download the latest version and run the app.<br />
-     On MacOS, if the app says it cannot run, please run Terminal, go to the folder that contains GallerySorter.app and enter the command<br />
-     `chmod -R +x GallerySorter.app`<br />
+     On MacOS, if the app says it cannot run, please run Terminal, go to the folder that contains AutoPhoto.app and enter the command<br />
+     `chmod -R +x AutoPhoto.app`<br />
      This enables the app to be executable on your device.
 
   2. **Running the code directly**
      Download the repo from github.<br />
      Ensure Python3 is installed, preferably version 3.12.<br />
-     Open Terminal or Command Prompt, go to the folder that contains GallerySorter folder and enter the command<br />
+     Open Terminal or Command Prompt, go to the folder that contains AutoPhoto folder and enter the command<br />
      `python main.py`
 
   3. **Using an IDE**
@@ -38,11 +38,11 @@ Couple of ways to run GallerySorter
 
 ## Contributing
 
-Thanks for your interest in contributing to GallerySorter!
+Thanks for your interest in contributing to AutoPhoto!
 
 ## License
 
-GallerySorter is released under **The Apache License, Version 2.0**.
+AutoPhoto is released under **The Apache License, Version 2.0**.
 
 ## Acknowledgments
 
