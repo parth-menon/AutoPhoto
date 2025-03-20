@@ -103,8 +103,11 @@ class UI:
         self.files_organised_label = tk.Label(root, text="Files organised: 0")
         self.files_organised_label.pack()
 
-        self.files_not_moved_label = tk.Label(root, text="Files that could not be organised: 0")
+        self.files_not_organised_label = tk.Label(root, text="Files that could not be organised: 0")
+        self.files_not_organised_label.pack()
+        self.files_not_moved_label = tk.Label(root, text="Files not copied/moved: 0")
         self.files_not_moved_label.pack()
+
         self.close_button = tk.Button(root, text="Close", command=self.close)
         self.close_button.pack()
         root.protocol("WM_DELETE_WINDOW", self.close)
@@ -147,7 +150,9 @@ class UI:
         self.year_folders_label.config(text="Year folders generated: " + str(result.year_folders))
         self.month_folders_label.config(text="Month folders generated: " + str(result.month_folders))
         self.files_organised_label.config(text="Files organised: " + str(result.files_organised))
-        self.files_not_moved_label.config(text="Files that could not be moved: "+ str(result.files_not_organised))
+        self.files_not_organised_label.config(text="Files that could not be organised: "+ str(result.files_not_organised))
+        self.files_not_moved_label.config(
+            text="Files not copied/moved: " + str(result.files_not_moved))
         self.go_button.config(state="normal")
         self.close_button.config(state="normal")
 

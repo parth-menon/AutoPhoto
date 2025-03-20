@@ -3,7 +3,6 @@ import os
 import shutil
 
 import exifread
-from pyasn1.type.univ import Boolean
 
 import dateextractor
 from ai import AiClient
@@ -74,8 +73,13 @@ class Processor:
                 pass
             else:
                 organised_folder_path = organised_folder_path+"/"+day
-            self.place_file_in_correct_location(file, organised_folder_path, year_month_day)
-            self.result.files_organised+=1
+            try:
+                self.place_file_in_correct_location(file, organised_folder_path, year_month_day)
+                self.result.files_organised+=1
+            except shutil.Error as e:
+                if "already exists" in str(e):
+                    self.result.files_not_moved += 1
+                    pass  # Skip if file already exists
         else:
             self.unorganised_files.append(file)
             self.result.files_not_organised += 1
@@ -145,6 +149,7 @@ class Processor:
         else:
             shutil.copy(file.path, destination)
         self.set_last_modification_time_if_incorrect(os.path.join(destination, file.name), year_month_day)
+
 
     def set_last_modification_time_if_incorrect(self, file_path, year_month_day):
         try:

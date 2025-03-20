@@ -1,6 +1,4 @@
 import datetime
-import os
-
 from google import genai
 
 class AiClient:
