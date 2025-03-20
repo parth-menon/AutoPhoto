@@ -17,12 +17,24 @@ GallerySorter is a simple Python program designed to help you organize images an
 
 ## Installation and Running
 
-To run GallerySorter, follow these steps:
+Couple of ways to run GallerySorter
 
-1. **Install PyCharm Community Edition**: Download and install PyCharm Community Edition from the official JetBrains website https://www.jetbrains.com/pycharm/download/
-2. **Download the Repository**: Clone or download this repository to your local machine.
-3. **Open the Project in PyCharm**: Open the downloaded repository in PyCharm.
-4. **Run the Program**: Right-click on `main.py` and select "Run" to start the application.
+  1. **Using the released app**
+     Head over to the releases section and download the latest version and run the app.<br />
+     On MacOS, if the app says it cannot run, please run Terminal, go to the folder that contains GallerySorter.app and enter the command<br />
+     `chmod -R +x GallerySorter.app`<br />
+     This enables the app to be executable on your device.
+
+  2. **Running the code directly**
+     Download the repo from github.<br />
+     Ensure Python3 is installed, preferably version 3.12.<br />
+     Open Terminal or Command Prompt, go to the folder that contains GallerySorter folder and enter the command<br />
+     `python main.py`
+
+  3. **Using an IDE**
+     If you are not comfortable using terminal, then Download and install PyCharm Community Edition from the official JetBrains website https://www.jetbrains.com/pycharm/download/<br />
+     Clone or download this repository to your local machine and open it in PyCharm.<br />
+     Right-click on `main.py` and select "Run" to start the application.
 
 ## Contributing
 
