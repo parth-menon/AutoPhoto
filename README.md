@@ -2,7 +2,8 @@
 
 AutoPhoto is a simple Python program designed to help you organize images and videos you have been taking for years. Unlike many commercial solutions that either run locally(like PhotoMove) or on the cloud and often use your images to train AI models(like GooglePhotos), AutoPhoto offers a straightforward, privacy-focused approach to media organization.
 
-<img width="723" alt="Screenshot 2025-03-08 at 6 43 07 pm" src="https://github.com/user-attachments/assets/cfdce1d1-6b35-4d51-a833-c2905e24d92c" />
+<img width="706" alt="Photo" src="https://github.com/user-attachments/assets/c60eae0b-adac-44ee-98d6-5f305e7c26f4" />
+
 
 ## Features
 
